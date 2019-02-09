@@ -141,4 +141,32 @@ class EventServiceImplTest {
 		eventServiceImpl.deleteEvent(0);
 		assert !(DataStorage.eventData.containsValue(event));
 	}
+	@Test
+	void testStudentAdd_NullCase() throws Exception {
+		int event = 200; // Garbage number
+		Student student = null;
+		eventServiceImpl.addStudentToEvent(student, event);
+	}
+	@Test
+	void testStudentAdd_GoodCase() {
+		Student student = new Student();
+		student.setFirstName("Noah");
+		student.setLastName("Grove");
+		student.setId(2);
+		try {
+			eventServiceImpl.addStudentToEvent(student, 1);
+		} 
+		catch (Exception e) {
+		}
+		assert (DataStorage.eventData.get(1)).getStudents().contains(student);
+	}
+	@Test
+	void testStudentAdd_BadCase() {
+		Student student = new Student();
+		student.setFirstName("Noah");
+		student.setLastName("Grove");
+		student.setId(2);
+		// Something a bug in here?
+		// Also, just write two more cases
+	}
 }
