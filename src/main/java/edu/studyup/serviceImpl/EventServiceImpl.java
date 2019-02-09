@@ -15,6 +15,7 @@ public class EventServiceImpl implements EventService {
 
 	@Override
 	public Event updateEvent(Event event) {
+		// Collision if IDs are the same
 		DataStorage.eventData.put(event.getEventID(), event);
 		event = DataStorage.eventData.get(event.getEventID());
 		return event;
@@ -26,6 +27,7 @@ public class EventServiceImpl implements EventService {
 		List<Event> activeEvents = new ArrayList<>();
 		
 		// Checks if an event date is before today, if no, then add to the active event list.
+		// Array overflow or whatever it's called
 		for (int i=0;i<eventData.size();i++) {
 			Event ithEvent= eventData.get(i);
 			if(!ithEvent.getDate().before(new Date())) {
