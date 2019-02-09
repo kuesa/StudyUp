@@ -103,10 +103,11 @@ class EventServiceImplTest {
 	@Test
 	void testGetActiveEvents_BadCase() {
 		Event event2 = new Event();
-		event2.setEventID(2);
-		event2.setDate(new Date());
+		event2.setEventID(0);
+		event2.setDate(new Date(999999999999999999L));
 		event2.setName("Event 2");
-
+		DataStorage.eventData.put(event2.getEventID(), event2);
+		
 		Event event = DataStorage.eventData.get(1);
 		event.setDate(new Date(0L));
 		eventServiceImpl.updateEvent(event);
@@ -116,10 +117,11 @@ class EventServiceImplTest {
 	@Test
 	void testGetActiveEvents_GoodCase() {
 		Event event = new Event();
-		event.setEventID(1);
+		event.setEventID(0);
 		event.setDate(new Date(999999999999999999L));
 		eventServiceImpl.updateEvent(event);
 		List<Event> activeEvents = eventServiceImpl.getActiveEvents();
+		assert activeEvents.contains(event);
 	}
 
 	
