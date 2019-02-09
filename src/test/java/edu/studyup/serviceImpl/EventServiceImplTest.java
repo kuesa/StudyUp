@@ -123,6 +123,14 @@ class EventServiceImplTest {
 		List<Event> activeEvents = eventServiceImpl.getActiveEvents();
 		assert activeEvents.contains(event);
 	}
-
+	@Test
+	void testGetPastEvents_GoodCase() {
+		Event event = new Event();
+		event.setEventID(0);
+		event.setDate(new Date(0L));
+		eventServiceImpl.updateEvent(event);
+		List<Event> activeEvents = eventServiceImpl.getPastEvents();
+		assert activeEvents.contains(event);
+	}
 	
 }
