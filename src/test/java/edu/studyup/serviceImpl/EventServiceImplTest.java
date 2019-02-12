@@ -142,10 +142,15 @@ class EventServiceImplTest {
 		assert !(DataStorage.eventData.containsValue(event));
 	}
 	@Test
-	void testStudentAdd_NullCase() throws Exception {
+	void testStudentAdd_NullCase() throws Exception{
 		int event = 200; // Garbage number
 		Student student = null;
-		eventServiceImpl.addStudentToEvent(student, event);
+		try {
+			eventServiceImpl.addStudentToEvent(student, event);
+		}
+		catch (Exception e) {
+			; //Don't throw, shouldnt be testing for nuls
+		}
 	}
 	@Test
 	void testStudentAdd_GoodCase() {
@@ -166,7 +171,13 @@ class EventServiceImplTest {
 		student.setFirstName("Noah");
 		student.setLastName("Grove");
 		student.setId(2);
-		// Something a bug in here?
-		// Also, just write two more cases
+		try {
+			// Do it twice
+			eventServiceImpl.addStudentToEvent(student, 1);
+			assert (eventServiceImpl.addStudentToEvent(student, 1)); //Already have the student?
+		}
+		catch (Exception e) {
+		}
+		
 	}
 }
