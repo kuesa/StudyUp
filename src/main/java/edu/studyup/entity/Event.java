@@ -47,11 +47,13 @@ public class Event {
 	}
 
 	public Date getDate() {
-		return date;
+		Date currentDate = this.date;
+		return currentDate;
 	}
 
 	public void setDate(Date date) {
-		this.date = date;
+		Date newDate = new Date(date.getTime());
+		this.date = newDate;
 	}
 
 	public int getEventID() {
