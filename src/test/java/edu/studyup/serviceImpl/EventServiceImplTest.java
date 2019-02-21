@@ -53,6 +53,8 @@ class EventServiceImplTest {
 		eventStudents.add(student);
 		event.setStudents(eventStudents);
 		
+		
+		
 		DataStorage.eventData.put(event.getEventID(), event);
 	}
 
@@ -78,13 +80,104 @@ class EventServiceImplTest {
 			eventServiceImpl.updateEvent(event);
 		  });
 	}
+	
 	@Test
-	// @Disabled("Not ready")
-	void testUpdateMethod_event_null_badcases() {
-		Event event = null;
-		Assertions.assertThrows(StudyUpException.class, () =>) {
-			eventServiceImpl.updateEvent(event);
+	void testUpdateEventID_BadCase() {
+		Event event1 = DataStorage.eventData.get(1);
+		Event event2 = new Event();
+		event2.setEventID(1);
+		event2.setName("Event 2");
+		eventServiceImpl.updateEvent(event2);
+		assertEquals("Event 1", DataStorage.eventData.get(event1.getEventID()).getName());
+	}
+	
+	@Test
+	void testUpdateEventID_GoodCase() {
+		Event event2 = new Event();
+		event2.setEventID(1);
+		event2.setName("Event 2");
+		eventServiceImpl.updateEvent(event2);
+		assertEquals("Event 2", DataStorage.eventData.get(event2.getEventID()).getName());
+	}
+	
+	@Test
+	void testGetActiveEvents_BadCase() {
+		Event event2 = new Event();
+		event2.setEventID(0);
+		event2.setDate(new Date(999999999999999999L));
+		event2.setName("Event 2");
+		DataStorage.eventData.put(event2.getEventID(), event2);
+		
+		Event event = DataStorage.eventData.get(1);
+		event.setDate(new Date(0L));
+		eventServiceImpl.updateEvent(event);
+		List<Event> activeEvents = eventServiceImpl.getActiveEvents();
+		assert activeEvents.contains(event);
+	}
+	@Test
+	void testGetActiveEvents_GoodCase() {
+		Event event = new Event();
+		event.setEventID(0);
+		event.setDate(new Date(999999999999999999L));
+		eventServiceImpl.updateEvent(event);
+		List<Event> activeEvents = eventServiceImpl.getActiveEvents();
+		assert activeEvents.contains(event);
+	}
+	@Test
+	void testGetPastEvents_GoodCase() {
+		Event event = new Event();
+		event.setEventID(0);
+		event.setDate(new Date(0L));
+		eventServiceImpl.updateEvent(event);
+		List<Event> activeEvents = eventServiceImpl.getPastEvents();
+		assert activeEvents.contains(event);
+	}
+	@Test
+	void testDeleteEvent_GoodCase() {
+		Event event = new Event();
+		event.setEventID(0);
+		event.setDate(new Date(0L));
+		eventServiceImpl.updateEvent(event);
+		eventServiceImpl.deleteEvent(0);
+		assert !(DataStorage.eventData.containsValue(event));
+	}
+	@Test
+	void testStudentAdd_NullCase() throws Exception{
+		int event = 200; // Garbage number
+		Student student = null;
+		try {
+			eventServiceImpl.addStudentToEvent(student, event);
+		}
+		catch (Exception e) {
+			; //Don't throw, shouldnt be testing for nuls
 		}
 	}
-
+	@Test
+	void testStudentAdd_GoodCase() {
+		Student student = new Student();
+		student.setFirstName("Noah");
+		student.setLastName("Grove");
+		student.setId(2);
+		try {
+			eventServiceImpl.addStudentToEvent(student, 1);
+		} 
+		catch (Exception e) {
+		}
+		assert (DataStorage.eventData.get(1)).getStudents().contains(student);
+	}
+	@Test
+	void testStudentAdd_BadCase() {
+		Student student = new Student();
+		student.setFirstName("Noah");
+		student.setLastName("Grove");
+		student.setId(2);
+		try {
+			// Do it twice
+			eventServiceImpl.addStudentToEvent(student, 1);
+			assert (eventServiceImpl.addStudentToEvent(student, 1)); //Already have the student?
+		}
+		catch (Exception e) {
+		}
+		
+	}
 }
